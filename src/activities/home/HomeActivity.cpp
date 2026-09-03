@@ -1879,7 +1879,14 @@ void HomeActivity::render(RenderLock&&) {
   const auto pageWidth = renderer.getScreenWidth();
   const auto pageHeight = renderer.getScreenHeight();
   const auto displayHomeBuffer = [this] {
-    const auto refreshMode = initialFullRefresh ? HalDisplay::FULL_REFRESH : HalDisplay::FAST_REFRESH;
+    // Ana ekran normalde yalnizca ilk boyamada tam yenileme yapar; sonraki her
+    // menu hareketi hizli yenilemeyle boyanir. Hizli yenilemeler beyaz zeminde
+    // gri kalinti biriktirir (bkz. sürücüdeki gri mod notlari). Her birkac
+    // hizli boyamada bir tam temizleme yaparak kalintiyi tutmuyoruz.
+    constexpr uint8_t kFastPaintsBeforeFullRefresh = 4;
+    const bool promoteToFull = initialFullRefresh || fastPaintsSinceFullRefresh >= kFastPaintsBeforeFullRefresh;
+    const auto refreshMode = promoteToFull ? HalDisplay::FULL_REFRESH : HalDisplay::FAST_REFRESH;
+    fastPaintsSinceFullRefresh = promoteToFull ? 0 : static_cast<uint8_t>(fastPaintsSinceFullRefresh + 1);
     initialFullRefresh = false;
     renderer.displayBuffer(refreshMode);
   };

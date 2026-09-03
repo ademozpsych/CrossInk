@@ -14,6 +14,7 @@
 
 #include <algorithm>
 
+#include "DailyReadingMinutes.h"
 #include "BookStatsActivity.h"
 #include "CrossPointSettings.h"
 #include "CrossPointState.h"
@@ -525,6 +526,8 @@ void XtcReaderActivity::commitReadingStats() {
     if (hasSessionStartLocalDateTime) {
       stats.recordReadingSpan(sessionStartLocalDateTime, elapsedSecs);
       globalStats.recordReadingSpan(sessionStartLocalDateTime, elapsedSecs);
+      // Okuma karti isi haritasi icin gunluk dakika kaydi (ayri dosya).
+      DailyReadingMinutes::recordAndSave(sessionStartLocalDateTime, elapsedSecs);
     }
     if (elapsedSecs >= 120 && !stats.startDateManual && !stats.startDate.isValid() && hasSessionStartLocalDateTime) {
       stats.startDate = sessionStartLocalDateTime.date;

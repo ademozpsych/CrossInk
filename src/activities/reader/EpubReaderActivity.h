@@ -360,6 +360,9 @@ class EpubReaderActivity final : public Activity {
   void restoreGlobalReaderSettings();
   void loadBookReaderSettings();
   void saveCurrentBookReaderSettings();
+  // Kitaba ozel okuyucu ayarlarini (font, Bionic, Kilavuz, render modu) siler;
+  // kitap yeniden genel Ayarlar > Okuyucu degerlerini kullanir.
+  void resetBookReaderSettingsToGlobal();
   void saveDictionaryFontForBook(const char* familyName, uint8_t pointSize);
   void saveGlobalSettingsPreservingBookOverrides();
   void beginGlobalSettingsEdit();

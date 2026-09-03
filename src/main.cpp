@@ -187,6 +187,10 @@ EpdFont ui12RegularFont(&inter_12_regular);
 EpdFont ui12BoldFont(&inter_12_bold);
 EpdFontFamily ui12FontFamily(&ui12RegularFont, &ui12BoldFont);
 
+// Okuma karti: yalniz rakam ve bosluk iceren 64 px Inter Bold.
+EpdFont hero64RegularFont(&inter_64_hero);
+EpdFontFamily hero64FontFamily(&hero64RegularFont, &hero64RegularFont);
+
 // measurement of power button press duration calibration value
 unsigned long t1 = 0;
 unsigned long t2 = 0;
@@ -747,6 +751,7 @@ void setupDisplayAndFonts(const bool seamless = false, const bool loadReaderReso
   renderer.insertFont(UI_10_FONT_ID, ui10FontFamily);
   renderer.insertFont(UI_12_FONT_ID, ui12FontFamily);
   renderer.insertFont(SMALL_FONT_ID, smallFontFamily);
+  renderer.insertFont(HERO_64_FONT_ID, hero64FontFamily);
 
   if (loadReaderResources) {
     sdFontSystem.begin(renderer);

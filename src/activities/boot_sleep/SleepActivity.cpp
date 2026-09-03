@@ -28,6 +28,7 @@
 #include "SleepCoverAssets.h"
 #include "activities/reader/ReaderUtils.h"
 #include "components/UITheme.h"
+#include "components/ReadingCardScreen.h"
 #include "components/themes/dashboard/DashboardTheme.h"
 #include "components/themes/minimal/MinimalTheme.h"
 #include "fontIds.h"
@@ -508,6 +509,8 @@ void SleepActivity::onEnter() {
       return renderMinimalStatsSleepScreen();
     case (CrossPointSettings::SLEEP_SCREEN_MODE::DASHBOARD_SLEEP):
       return renderDashboardSleepScreen();
+    case (CrossPointSettings::SLEEP_SCREEN_MODE::READING_CARD_SLEEP):
+      return renderReadingCardSleepScreen();
     default:
       return renderDefaultSleepScreen();
   }
@@ -731,6 +734,41 @@ void SleepActivity::renderReadingStatsSleepScreen() const {
     renderPerBookStatsPage(renderer, nullptr, bookTitle, bookStats, progressPercent, false, 0, false, false, false);
   }
   if (!sleepCoverFilterInvertsGeneratedScreen()) {
+    renderer.invertScreen();
+  }
+  renderer.displayBuffer(HalDisplay::HALF_REFRESH, TURN_OFF_SCREEN_AFTER_SLEEP_REFRESH);
+}
+
+void SleepActivity::renderReadingCardSleepScreen() const {
+  ReadingCardScreen::BookLine book;
+
+  const std::string& path = currentBookPath.empty() ? APP_STATE.openEpubPath : currentBookPath;
+  if (!path.empty()) {
+    const RecentBook recent = recentBookForPath(path);
+    const std::string recentTitle = recentTitleForPath(path);
+    book.title = recentTitle.empty() ? filenameFromPath(path) : recentTitle;
+    book.author = recent.author;
+    book.progressPercent = RecentBookProgress::loadPercent(recent);
+  }
+
+  const GlobalReadingStats deviceStats = GlobalReadingStats::load();
+
+  // 736 baytlik gunluk dakika kaydi paylasilan render yigitina konmamali.
+  auto daily = makeUniqueNoThrow<DailyReadingMinutes>();
+  if (daily) {
+    DailyReadingMinutes::loadInto(*daily);
+    ReadingCardScreen::render(renderer, deviceStats, *daily, book);
+  } else {
+    LOG_ERR("SLP", "Could not allocate daily minutes for reading card, falling back to binary heatmap");
+    const DailyReadingMinutes empty;
+    ReadingCardScreen::render(renderer, deviceStats, empty, book);
+  }
+
+  // Kart beyaz zemin, siyah yazi olarak cizilir. Varsayilan koyu gorunum icin
+  // ters cevrilir; "acik zemin" secenegi cizimi oldugu gibi birakir (uzun
+  // sureli siyah uyku goruntusunun panelde iz birakmasini istemeyenler icin).
+  const bool wantLight = SETTINGS.readingCardLightBackground != 0;
+  if (wantLight == sleepCoverFilterInvertsGeneratedScreen()) {
     renderer.invertScreen();
   }
   renderer.displayBuffer(HalDisplay::HALF_REFRESH, TURN_OFF_SCREEN_AFTER_SLEEP_REFRESH);

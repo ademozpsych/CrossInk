@@ -663,7 +663,10 @@ void CrossPointWebServer::handleFileListData() const {
   // the old per-entry path as a low-memory fallback.
   constexpr size_t BATCH_CAPACITY = 1400;
   auto batch = makeUniqueNoThrow<char[]>(BATCH_CAPACITY);
-  char output[512];
+  // Ayar listesi girisi: Turkce gibi uzun etiketli dillerde 14-20 secenekli ayarlar
+  // (guc tusu, uzun basis) 512 bayti asip listeden dusuyordu. Tampon statik:
+  // islem yeniden girisli degil ve ag gorevinin yigitina bindirmek istemiyoruz.
+  static char output[1536];
   constexpr size_t outputSize = sizeof(output);
   JsonDocument doc;
 

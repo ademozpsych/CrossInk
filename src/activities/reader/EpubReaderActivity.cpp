@@ -24,6 +24,7 @@
 
 #include "../settings/DictionarySelectActivity.h"
 #include "../settings/KOReaderSettingsActivity.h"
+#include "DailyReadingMinutes.h"
 #include "BookStatsActivity.h"
 #include "ClipSelectionActivity.h"
 #include "ClippingStore.h"
@@ -1894,6 +1895,36 @@ void EpubReaderActivity::saveCurrentBookReaderSettings() {
   saveBookReaderSettingsFile(epub->getCachePath(), data);
 }
 
+void EpubReaderActivity::resetBookReaderSettingsToGlobal() {
+  if (!epub) {
+    return;
+  }
+
+  if (section && section->isBuilding()) {
+    section->releaseBuildFile();
+  }
+
+  // Dosyadaki CUSTOM ve RENDER_MODE bayraklarini dusur; otomatik sayfa cevirme
+  // ve sozluk fontu gibi diger kitaba ozel alanlara dokunma.
+  BookReaderSettingsData data = loadBookReaderSettingsFile(epub->getCachePath());
+  data.hasCustomReaderSettings = false;
+  data.hasRenderModeOverride = false;
+  data.renderMode = static_cast<uint8_t>(EpubRenderMode::CrossInkDefault);
+  if (!saveBookReaderSettingsFile(epub->getCachePath(), data)) {
+    LOG_ERR("ERS", "Failed to clear per-book reader settings");
+  }
+
+  bookHasCustomReaderSettings = false;
+  bookHasRenderModeOverride = false;
+  initialBookReaderSettings.hasCustomReaderSettings = false;
+  initialBookReaderSettings.hasRenderModeOverride = false;
+  initialBookReaderSettings.renderMode = data.renderMode;
+
+  // Kitap acilirken saklanan genel degerleri geri uygula.
+  applyReaderSettings(globalReaderSettingsBeforeBook);
+  SETTINGS.epubRenderMode = static_cast<uint8_t>(EpubRenderMode::CrossInkDefault);
+}
+
 void EpubReaderActivity::saveDictionaryFontForBook(const char* familyName, const uint8_t pointSize) {
   if (!epub) return;
 
@@ -2151,6 +2182,8 @@ void EpubReaderActivity::onExit() {
       if (hasSessionStartLocalDateTime) {
         stats.recordReadingSpan(sessionStartLocalDateTime, elapsedSecs);
         globalStats.recordReadingSpan(sessionStartLocalDateTime, elapsedSecs);
+        // Okuma karti isi haritasi icin gunluk dakika kaydi (ayri dosya).
+        DailyReadingMinutes::recordAndSave(sessionStartLocalDateTime, elapsedSecs);
       }
       if (elapsedSecs >= 120 && !stats.startDateManual && !stats.startDate.isValid() && hasSessionStartLocalDateTime) {
         stats.startDate = sessionStartLocalDateTime.date;
@@ -3318,6 +3351,19 @@ void EpubReaderActivity::onReaderMenuConfirm(EpubReaderMenuActivity::MenuAction 
             }
             onGoHome();
           });
+      break;
+    }
+    case EpubReaderMenuActivity::MenuAction::RESET_BOOK_SETTINGS: {
+      {
+        RenderLock lock(*this);
+        resetBookReaderSettingsToGlobal();
+        ensureReaderSdFontLoaded(renderer);
+        prepareCurrentSectionForRelayout();
+        section.reset();  // Genel ayarlarla yeniden dizilsin.
+      }
+      drawToast(renderer, tr(STR_BOOK_SETTINGS_RESET_DONE));
+      delay(1000);
+      requestUpdate();
       break;
     }
     case EpubReaderMenuActivity::MenuAction::RESET_READING_PACE: {

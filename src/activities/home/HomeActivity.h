@@ -33,6 +33,8 @@ class HomeActivity final : public Activity {
   // Silent restarts keep the panel's previous frame. The first Home paint must
   // use a clean waveform so X4 panels do not diff against a WiFi screen.
   bool initialFullRefresh = false;
+  // Son tam yenilemeden bu yana hizli boyama sayisi (periyodik tam temizleme icin).
+  uint8_t fastPaintsSinceFullRefresh = 0;
   bool hasReadingStats = false;
   bool hasBookmarks = false;
   bool hasClippings = false;

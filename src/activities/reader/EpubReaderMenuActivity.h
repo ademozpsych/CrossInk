@@ -46,7 +46,8 @@ class EpubReaderMenuActivity final : public Activity {
     VIEW_CLIPPINGS,
     LOOKUP,
     LOOKUP_HISTORY,
-    SET_BOOK_DICTIONARY
+    SET_BOOK_DICTIONARY,
+    RESET_BOOK_SETTINGS  // kitaba ozel okuyucu ayarlarini sil, genel ayarlara don
   };
 
   explicit EpubReaderMenuActivity(

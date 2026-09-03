@@ -1,3 +1,19 @@
+## [Unreleased] - okuma-karti fork
+
+### Added
+
+- "Reading Card" sleep screen: a shareable, story-style summary with the current reading streak, this week's time, a GitHub-style daily heatmap for the last 26 weeks, lifetime totals, and the book currently being read. Lives under Settings > Display > Sleep Screen.
+- Daily reading minutes are now recorded to `/.crosspoint/daily_minutes.bin` (one byte per day, 730 days) so the heatmap can show three intensity levels. The existing `global_stats.bin` format is unchanged; if the file is missing the card falls back to a binary (read / not read) map.
+- A 64 px digits-only Inter Bold face (`HERO_64_FONT_ID`) for the card's large streak number.
+- Reader menu: "Use global settings for this book" clears a book's private reader settings (font, Bionic, Guide Dots, render mode) so the book follows Settings > Reader again.
+- Settings > Display: "Reading Card: light background" draws the card black-on-white instead of inverted.
+- Turkish translations for the Dashboard/home stat labels (Reading Time, Time Left, Progress, Daily Avg, Pages/Min, Started, Est. Finish Date, Sessions, Books Read) and the home card's "Total time / Avg. session" lines.
+
+### Changed
+
+- Home screen now promotes every fifth repaint to a full refresh so grey residue from fast refreshes does not accumulate while browsing menus.
+- Web settings API: per-entry JSON buffer grown from 512 to 1536 bytes (static) so settings with long localized option lists (power button, long-press actions) are no longer dropped from `/api/settings`.
+
 ## [v1.5.0] - 2026-08-08
 
 ### Added

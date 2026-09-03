@@ -50,4 +50,5 @@
 #include <builtinFonts/inter_10_regular.h>
 #include <builtinFonts/inter_12_bold.h>
 #include <builtinFonts/inter_12_regular.h>
+#include <builtinFonts/inter_64_hero.h>
 #include <builtinFonts/inter_8_regular.h>

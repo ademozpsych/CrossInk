@@ -154,3 +154,6 @@ static_assert(BITTER_20_FONT_ID != 0, "Font ID collision with sentinel");
 static_assert(UI_10_FONT_ID != 0, "Font ID collision with sentinel");
 static_assert(UI_12_FONT_ID != 0, "Font ID collision with sentinel");
 static_assert(SMALL_FONT_ID != 0, "Font ID collision with sentinel");
+
+// Okuma karti icin buyuk rakam fontu (yalniz 0-9 ve bosluk)
+#define HERO_64_FONT_ID (1770064064)
