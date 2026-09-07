@@ -720,6 +720,8 @@ inline const std::vector<SettingInfo>& getBaseSettingsList() {
                            {CrossPointSettings::MIN_READING_IDLE_TIME_THRESHOLD_UNITS,
                             CrossPointSettings::MAX_READING_IDLE_TIME_THRESHOLD_UNITS, 1},
                            "readingIdleTimeThresholdUnits", StrId::STR_CAT_SYSTEM));
+    add(SettingInfo::Toggle(StrId::STR_IDLE_PAGE_COUNTS_TO_THRESHOLD, &CrossPointSettings::idlePageCountsToThreshold,
+                            "idlePageCountsToThreshold", StrId::STR_CAT_SYSTEM));
 #ifdef CROSSINK_ENABLE_READING_STATS_TOGGLE
     add(SettingInfo::Toggle(StrId::STR_TRACK_READING_STATS, &CrossPointSettings::trackReadingStats, "trackReadingStats",
                             StrId::STR_CAT_SYSTEM));
@@ -1201,6 +1203,7 @@ inline std::vector<SettingInfo> buildSystemReadingStatsSettingsList(const std::v
   addSettingByName(settings, allSettings, StrId::STR_TRACK_READING_STATS);
   settings.push_back(SettingInfo::Submenu(StrId::STR_ALL_TIME_STATS, SettingAction::SystemGlobalStats));
   addSettingByName(settings, allSettings, StrId::STR_IDLE_TIME_THRESHOLD);
+  addSettingByName(settings, allSettings, StrId::STR_IDLE_PAGE_COUNTS_TO_THRESHOLD);
   return settings;
 }
 

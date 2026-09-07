@@ -11,6 +11,7 @@
 
 ### Changed
 
+- Reading time: a page held longer than the idle threshold now counts up to the threshold instead of being discarded entirely (Settings > System > Reading Stats > "Count idle pages up to threshold", on by default; off restores upstream behavior).
 - Home screen now promotes every fifth repaint to a full refresh so grey residue from fast refreshes does not accumulate while browsing menus.
 - Web settings API: per-entry JSON buffer grown from 512 to 1536 bytes (static) so settings with long localized option lists (power button, long-press actions) are no longer dropped from `/api/settings`.
 

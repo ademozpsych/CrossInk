@@ -1431,7 +1431,15 @@ bool EpubReaderActivity::currentPageReadingSecondsForStats(uint32_t& seconds, co
 
   const uint32_t thresholdSeconds = SETTINGS.getReadingIdleTimeThresholdSeconds();
   if (elapsedSeconds > thresholdSeconds) {
-    return false;
+    // Ust akis bu sayfayi "bosta" sayip tamamen atar. Yavas okunan yogun bir
+    // sayfa ya da kisa bir mola yuzunden dakikalarin kaybolmamasi icin, secenek
+    // acikken sayfayi esige kadar sayiyoruz: okur en az esik kadar okumus kabul
+    // edilir, fazlasi bosta sayilir.
+    if (SETTINGS.idlePageCountsToThreshold == 0) {
+      return false;
+    }
+    seconds = thresholdSeconds;
+    return true;
   }
 
   seconds = elapsedSeconds;
