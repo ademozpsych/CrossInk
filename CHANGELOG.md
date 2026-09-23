@@ -7,6 +7,7 @@
 - A 64 px digits-only Inter Bold face (`HERO_64_FONT_ID`) for the card's large streak number.
 - Reader menu: "Use global settings for this book" clears a book's private reader settings (font, Bionic, Guide Dots, render mode) so the book follows Settings > Reader again.
 - Settings > Display: "Reading Card: light background" draws the card black-on-white instead of inverted.
+- Turkish translations for the finish-a-book flow: the 99% "Mark as Finished?" prompt, the marked finished/unfinished notices, and the move-to-Read failure alert (previously shown in English).
 - Turkish translations for the Dashboard/home stat labels (Reading Time, Time Left, Progress, Daily Avg, Pages/Min, Started, Est. Finish Date, Sessions, Books Read) and the home card's "Total time / Avg. session" lines.
 
 ### Changed
